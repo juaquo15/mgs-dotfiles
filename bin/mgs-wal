@@ -1,0 +1,91 @@
+#!/bin/bash
+# Extrae colores del wallpaper activo y los aplica a Hyprland borders, waybar, walker y mako.
+# Terminal y colores MGS base (verde #00FF41, fondo #010801) NO se modifican.
+
+WALLPAPER=$(readlink -f ~/.config/omarchy/current/background 2>/dev/null)
+[[ -f "$WALLPAPER" ]] || exit 0
+
+# Buscar socket de Hyprland si no está en el entorno (ej. desde systemd)
+if [[ -z "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
+    export HYPRLAND_INSTANCE_SIGNATURE=$(ls -t /tmp/hypr/ 2>/dev/null | head -1)
+fi
+
+# Generar paleta — sin tocar terminal (-n), sin cambiar fondo (-s), sin título (-t)
+wal -i "$WALLPAPER" -n -s -t --saturate 0.65 2>/dev/null || exit 0
+
+# Cargar los colores generados
+# shellcheck source=/dev/null
+source ~/.cache/wal/colors.sh 2>/dev/null || exit 0
+
+# Limpiar # para hyprctl
+c2="${color2//#/}"
+c4="${color4//#/}"
+
+# ── Hyprland borders ──────────────────────────────────────────────────────────
+hyprctl eval "hl.config({ general = { col = { active_border = \"rgb(${c2})\" } } })" 2>/dev/null || true
+hyprctl eval "hl.config({ group = { col = { border_active = \"rgb(${c2})\" } } })" 2>/dev/null || true
+
+# ── Waybar ────────────────────────────────────────────────────────────────────
+cat > "$HOME/.config/omarchy/current/theme/waybar.css" << EOF
+@define-color foreground #00FF41;
+@define-color background #010801;
+@define-color wal_accent ${color2};
+@define-color wal_accent2 ${color4};
+EOF
+omarchy restart waybar 2>/dev/null || true
+
+# ── Walker ────────────────────────────────────────────────────────────────────
+cat > "$HOME/.config/omarchy/current/theme/walker.css" << EOF
+@define-color selected-text ${color2};
+@define-color text ${color2};
+@define-color base #010801;
+@define-color border ${color2};
+@define-color foreground ${color2};
+@define-color background #010801;
+EOF
+omarchy restart walker 2>/dev/null || true
+
+# ── Mako ─────────────────────────────────────────────────────────────────────
+python3 - "${color2}" << 'PYEOF'
+import sys, re, os
+color = sys.argv[1]
+path = os.path.expanduser('~/.config/omarchy/current/theme/mako.ini')
+txt = open(path).read()
+txt = re.sub(r'^text-color=.*', f'text-color={color}', txt, flags=re.M)
+txt = re.sub(r'^border-color=.*', f'border-color={color}', txt, flags=re.M)
+open(path, 'w').write(txt)
+PYEOF
+makoctl reload 2>/dev/null || true
+
+# ── Terminal colors ───────────────────────────────────────────────────────────
+python3 - "${color2}" << 'PYEOF'
+import sys, re, os
+color = sys.argv[1]
+
+# colors.toml (generic reference)
+toml_path = os.path.expanduser('~/.config/omarchy/current/theme/colors.toml')
+txt = open(toml_path).read()
+for key in ('foreground', 'accent', 'cursor'):
+    txt = re.sub(rf'^{key}\s*=.*', f'{key} = "{color}"', txt, flags=re.M)
+open(toml_path, 'w').write(txt)
+
+# alacritty.toml (actually read by alacritty)
+alac_path = os.path.expanduser('~/.config/omarchy/current/theme/alacritty.toml')
+txt = open(alac_path).read()
+
+# Only patch foreground in [colors.primary] and cursor in [colors.cursor] / [colors.vi_mode_cursor]
+target_sections = {'colors.primary': ['foreground'], 'colors.cursor': ['cursor'], 'colors.vi_mode_cursor': ['cursor']}
+lines = txt.splitlines()
+current_section = None
+out = []
+for line in lines:
+    m = re.match(r'^\[([^\]]+)\]', line)
+    if m:
+        current_section = m.group(1)
+    if current_section in target_sections:
+        for key in target_sections[current_section]:
+            line = re.sub(rf'^({key}\s*=\s*)"#[0-9a-fA-F]{{6}}"', rf'\1"{color}"', line)
+    out.append(line)
+open(alac_path, 'w').write('\n'.join(out) + '\n')
+PYEOF
+omarchy restart terminal 2>/dev/null || true

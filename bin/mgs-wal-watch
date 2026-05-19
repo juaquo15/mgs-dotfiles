@@ -1,0 +1,12 @@
+#!/bin/bash
+# Escucha cambios de symlink en ~/.config/omarchy/current/ y dispara mgs-wal.
+# PathChanged de systemd no detecta symlinks reemplazados — inotifywait sí.
+
+WATCH_DIR="$HOME/.config/omarchy/current"
+
+inotifywait -m -e create,moved_to "$WATCH_DIR" --format '%f' 2>/dev/null | while read -r file; do
+    if [[ "$file" == "background" ]]; then
+        sleep 0.5
+        "$HOME/.local/bin/mgs-wal"
+    fi
+done

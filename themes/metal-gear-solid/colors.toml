@@ -1,0 +1,38 @@
+accent = "#00FF41"
+cursor = "#00FF41"
+foreground = "#00FF41"
+background = "#010801"
+selection_foreground = "#010801"
+selection_background = "#00FF41"
+
+# blacks / dark greens
+color0 = "#010801"
+color8 = "#0A2A0A"
+
+# reds (alert)
+color1 = "#CC1A00"
+color9 = "#FF2200"
+
+# greens (codec / primary)
+color2 = "#00FF41"
+color10 = "#33FF66"
+
+# yellows (caution / radar)
+color3 = "#FFAA00"
+color11 = "#FFD700"
+
+# blues → dark military green
+color4 = "#005533"
+color12 = "#00AA55"
+
+# magentas → camo olive
+color5 = "#4B8B3B"
+color13 = "#66BB44"
+
+# cyans (radar sweep)
+color6 = "#00CCAA"
+color14 = "#44DDCC"
+
+# whites → light green
+color7 = "#88CC88"
+color15 = "#CCFFCC"

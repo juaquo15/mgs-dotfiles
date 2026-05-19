@@ -1,0 +1,11 @@
+#!/bin/bash
+FZF_COLORS="--color=bg:#010801,fg:#00FF41,prompt:#00FF41,pointer:#FF6B00,hl:#ddc263,border:#00FF41"
+
+selected=$(cliamp playlist list 2>/dev/null \
+    | tail -n +2 \
+    | awk '{print $1}' \
+    | fzf --prompt="  disco > " \
+          --height=60% --border=rounded $FZF_COLORS)
+
+[[ -z "$selected" ]] && exit 0
+exec cliamp --playlist "$selected"
