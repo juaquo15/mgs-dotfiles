@@ -1,4 +1,4 @@
-# MGS Dotfiles
+# MGS Dotfiles · [github.com/juaquo15/mgs-dotfiles](https://github.com/juaquo15/mgs-dotfiles)
 
 Tema **Metal Gear Solid** para CachyOS + Omarchy + Hyprland.  
 Verde codec `#00FF41`, fondo near-black `#010801`, estética táctica.
@@ -15,7 +15,7 @@ Verde codec `#00FF41`, fondo near-black `#010801`, estética táctica.
 ## Instalación
 
 ```bash
-git clone <repo> ~/Documentos/mgs-dotfiles
+git clone https://github.com/juaquo15/mgs-dotfiles ~/Documentos/mgs-dotfiles
 cd ~/Documentos/mgs-dotfiles
 ./install.sh
 ```
