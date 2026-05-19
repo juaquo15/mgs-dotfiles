@@ -7,7 +7,7 @@ Type=simple
 ExecStart=%h/.local/bin/mgs-wal-watch
 Restart=on-failure
 RestartSec=3
-Environment=PATH=/usr/bin:/usr/local/bin:/home/juaquo15/.local/bin
+Environment=PATH=/usr/bin:/usr/local/bin:%h/.local/bin
 PassEnvironment=HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_RUNTIME_DIR DBUS_SESSION_BUS_ADDRESS
 
 [Install]
