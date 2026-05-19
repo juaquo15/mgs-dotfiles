@@ -117,7 +117,7 @@ cd ~/Documentos/mgs-dotfiles
 - [x] Hyprland: border_color adaptativo al wallpaper
 - [x] Walker: launcher con colores adaptativos
 - [x] Wallpapers: 40+ fondos MGS1/2/3 en `~/.config/omarchy/backgrounds/metal-gear-solid/`
-- [ ] Hyprlock: pantalla de bloqueo estilo codec con ASCII art
+- [x] Hyprlock: pantalla de bloqueo estilo codec — fondo negro, reloj en verde, frame ASCII FOXHOUND, SOLID SNAKE nameplate, "ENTER CODEC FREQUENCY", "ACCESS DENIED" en rojo
 - [ ] Neovim: explorar tema green más específico (ej. matrix.nvim)
 - [ ] Alert sound: reproducir el "!" de MGS en eventos del sistema
 
@@ -128,3 +128,4 @@ cd ~/Documentos/mgs-dotfiles
 - 2026-05-18: layout de teclado latam/us-intl con toggle SUPER+SHIFT+K, indicador ES/EN en Waybar
 - 2026-05-18: bluetooth AutoEnable=true en /etc/bluetooth/main.conf
 - 2026-05-18: colores adaptativos al wallpaper (mgs-wal + systemd), waybar abajo, escala 1.25, comando music, repo GitHub
+- 2026-05-19: auditoría de seguridad (repo limpio), fix username hardcodeado en mgs-wal.service → %h, hyprlock codec screen completo
